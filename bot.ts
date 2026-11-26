@@ -57,7 +57,16 @@ bot.use(async (ctx, next) => {
 // ---------- команды игрока ----------
 bot.command("start", async (ctx) => {
   const id = ctx.from!.id;
-  const { user, isNew } = await ensureUser(id, ctx.from!.username ?? null);
+  let user: any, isNew: boolean;
+  try {
+    ({ user, isNew } = await ensureUser(id, ctx.from!.username ?? null));
+  } catch (e: any) {
+    console.error("ensureUser failed:", e?.message || e);
+    return ctx.reply("⚠️ Ошибка базы данных. Проверь SUPABASE_URL и SUPABASE_SERVICE_ROLE_KEY в Vercel Variables и что schema.sql залит в Supabase.");
+  }
+  if (!user) {
+    return ctx.reply("⚠️ Не удалось создать профиль. Обратись к админу.");
+  }
   const text =
     "🔮 Добро пожаловать в MagnusGrade!\n\n" +
     (isNew ? `Стартовый баланс: ${user.balance} 💎\n\n` : "") +
