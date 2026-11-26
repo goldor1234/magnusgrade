@@ -74,7 +74,8 @@ bot.command("start", async (ctx) => {
     "/app — открыть приложение\n/profile — профиль\n/history — история";
   try {
     await ctx.replyWithPhoto(`${APP}/welcome.png`, { caption: text, reply_markup: startKb(id) });
-  } catch {
+  } catch (e: any) {
+    console.error("replyWithPhoto failed (APP=" + APP + "):", e?.message || e);
     await ctx.reply(text, { reply_markup: startKb(id) });
   }
 });
