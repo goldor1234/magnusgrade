@@ -10,12 +10,12 @@
   const result = $("lastResult");
   const amount = (value) => Math.max(0, Math.floor(Number(value) || 0)).toLocaleString("ru-RU");
   const chanceFor = (mult) => Math.min(0.95, (1 / Number(mult)) * (1 - state.edge));
-​
+
   function setStatus(text, kind) {
     status.textContent = text;
     status.className = "status" + (kind ? " " + kind : "");
   }
-​
+
   function addOpenBotLink(message, kind) {
     setStatus(message, kind || "");
     const link = document.createElement("a");
@@ -25,7 +25,7 @@
     link.textContent = "Открыть бота";
     status.append(document.createElement("br"), link);
   }
-​
+
   async function waitForTelegram() {
     const deadline = Date.now() + 8000;
     while (Date.now() < deadline) {
@@ -34,14 +34,14 @@
     }
     return null;
   }
-​
+
   function renderDial() {
     const chance = chanceFor(state.mult);
     $("chanceArc").setAttribute("stroke-dasharray", `${chance * circumference} ${circumference}`);
     $("chanceValue").textContent = `${(chance * 100).toFixed(1)}%`;
     $("multLabel").textContent = `Множитель ×${state.mult}`;
   }
-​
+
   function setControlsEnabled(enabled) {
     const disabled = !enabled || state.busy || state.banned;
     betInput.disabled = disabled;
@@ -49,7 +49,7 @@
     document.querySelectorAll("[data-bet]").forEach((button) => { button.disabled = disabled; });
     document.querySelectorAll(".multiplier").forEach((button) => { button.disabled = disabled; });
   }
-​
+
   function renderMultipliers() {
     const root = $("multipliers");
     root.replaceChildren();
@@ -75,12 +75,12 @@
       root.appendChild(button);
     });
   }
-​
+
   function renderBalance() {
     $("balance").textContent = `${amount(state.balance)} 💎`;
     betInput.max = String(state.balance);
   }
-​
+
   async function request(path, body) {
     const response = await fetch(path, {
       method: body ? "POST" : "GET",
@@ -94,12 +94,12 @@
     if (!response.ok) throw new Error(data.error || `Ошибка сервера (${response.status})`);
     return data;
   }
-​
+
   function formatError(error) {
     if (error && error.message === "Failed to fetch") return "Не удалось связаться с сервером. Попробуй ещё раз.";
     return error && error.message ? error.message : "Не удалось выполнить запрос.";
   }
-​
+
   function spin(win, chance) {
     const pointer = $("needle");
     const position = win ? Math.random() * chance : chance + Math.random() * (1 - chance);
@@ -110,7 +110,7 @@
     const reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     return new Promise((resolve) => window.setTimeout(resolve, reduced ? 30 : 2600));
   }
-​
+
   document.querySelectorAll("[data-bet]").forEach((button) => {
     button.addEventListener("click", () => {
       const mode = button.dataset.bet;
@@ -123,7 +123,7 @@
       betInput.value = String(next || state.minBet);
     });
   });
-​
+
   playButton.addEventListener("click", async () => {
     if (state.busy || state.banned) return;
     const bet = Math.floor(Number(betInput.value));
@@ -135,7 +135,7 @@
       setStatus("Ставка больше текущего баланса", "error");
       return;
     }
-​
+
     state.busy = true;
     setControlsEnabled(true);
     result.textContent = "";
@@ -165,7 +165,7 @@
       setControlsEnabled(true);
     }
   });
-​
+
   async function init() {
     tg = await waitForTelegram();
     if (!tg) {
@@ -196,8 +196,7 @@
       setStatus(formatError(error), "error");
     }
   }
-​
+
   renderDial();
   init();
 })();
-​
