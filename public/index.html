@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#15111d">
   <meta name="color-scheme" content="dark">
   <title>MagnusGrade — апгрейдер</title>
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script async src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     :root {
       color-scheme: dark;
@@ -295,12 +295,26 @@
 ​
   <script>
     (() => {
-      const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
-      if (tg) {
-        try { tg.ready(); tg.expand(); } catch (_) {}
-      }
-​
+      let tg = null;
       const $ = (id) => document.getElementById(id);
+      const pause = (ms) => new Promise((resolve) => window.setTimeout(resolve, ms));
+      async function waitForTelegram() {
+        const deadline = Date.now() + 8000;
+        while (Date.now() < deadline) {
+          if (window.Telegram && window.Telegram.WebApp) return window.Telegram.WebApp;
+          await pause(120);
+        }
+        return null;
+      }
+      function addOpenBotLink(message, kind) {
+        setStatus(message, kind || "");
+        const link = document.createElement("a");
+        link.href = "https://t.me/magnusgrade_bot";
+        link.target = "_blank";
+        link.rel = "noopener noreferrer";
+        link.textContent = "Открыть бота";
+        status.append(document.createElement("br"), link);
+      }
       const circumference = 2 * Math.PI * 83;
       const state = { balance: 0, multipliers: [], edge: 0.05, minBet: 1, mult: 2, busy: false, banned: false, rotation: 0 };
       const betInput = $("bet");
@@ -447,14 +461,14 @@
       });
 ​
       async function init() {
-        if (!tg || !tg.initData) {
-          setStatus("Открой приложение через Telegram, чтобы загрузить профиль.", "");
-          const link = document.createElement("a");
-          link.href = "https://t.me/Magnuscoren_bot";
-          link.target = "_blank";
-          link.rel = "noopener noreferrer";
-          link.textContent = "Открыть бота";
-          status.append(document.createElement("br"), link);
+        tg = await waitForTelegram();
+        if (!tg) {
+          addOpenBotLink("Telegram SDK не загрузился. Проверь соединение и открой приложение через бота.", "error");
+          return;
+        }
+        try { tg.ready(); tg.expand(); } catch (_) {}
+        if (!tg.initData) {
+          addOpenBotLink("Открой приложение через Telegram, чтобы загрузить профиль.");
           return;
         }
         try {
