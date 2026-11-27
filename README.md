@@ -1,4 +1,4 @@
-# MagnusGrade — Telegram Mini App «Апгрейдер»
+# MarnusGrade — Telegram Mini App «Апгрейдер»
 
 Telegram-бот с Web App (казино-апгрейдер): пользователь выбирает множитель, чем он выше — тем ниже шанс выигрыша. Бросок делается на сервере через `crypto.randomInt`, балансы хранятся в Supabase, всё это хостится на Vercel как serverless-функции.
 
@@ -40,8 +40,11 @@ magnusgrade/
 │   ├── db.ts          # Supabase-клиент + ensureUser/changeBalance
 │   ├── auth.ts        # проверка подписи Telegram initData (HMAC-SHA256)
 │   └── config.ts      # MULTIPLIERS, EDGE, ADMINS, chanceOf()
-├── index.html         # Web App
-├── welcome.png        # картинка приветствия
+├── public/
+│   ├── index.html     # Web App
+│   ├── app.js
+│   ├── marnusgrade-mark.png
+│   └── marnusgrade-welcome.png  # картинка приветствия
 ├── schema.sql         # SQL для Supabase
 ├── package.json
 ├── tsconfig.json
@@ -103,7 +106,7 @@ npx tsc --noEmit        # должно пройти без ошибок
 
 1. Запушь исправленный репозиторий в свой GitHub.
 2. На https://vercel.com → **Add New → Project** → импортируй репозиторий.
-3. Vercel сам определит Node.js + TypeScript по `package.json` и `vercel.json`. Статический `index.html` и `welcome.png` будут отдаваться из корня как есть, а `.ts` из `api/` станут серверными функциями `/api/*`.
+3. Vercel сам определит Node.js + TypeScript по `package.json` и `vercel.json`. Статический `public/index.html` и `public/marnusgrade-welcome.png` будут отдаваться как есть, а `.ts` из `api/` станут серверными функциями `/api/*`.
 4. В **Settings → Environment Variables** добавь:
 
    | Key | Value |
@@ -154,7 +157,7 @@ https://<твой-домен>.vercel.app/api/setup?secret=ЗНАЧЕНИЕ_WEBHO
 
 ### Шаг 6. Проверка
 
-1. Открой бота в Telegram → `/start`. Должно прийти приветствие с картинкой `welcome.png`, балансом 1000 💎 и кнопкой «Открыть апгрейдер».
+1. Открой бота в Telegram → `/start`. Должно прийти приветствие с картинкой `marnusgrade-welcome.png`, балансом 1000 💎 и кнопкой «Открыть апгрейдер».
 2. Нажми кнопку — откроется Web App, в нём отобразится баланс и список множителей.
 3. Поставь ставку, выбери множитель, нажми «Апгрейд». Стрелка крутится, баланс меняется.
 4. В боте: `/profile` — статистика, `/history` — последние 10 игр.

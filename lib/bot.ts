@@ -59,12 +59,12 @@ bot.command("start", async (ctx) => {
   const id = ctx.from!.id;
   const { user, isNew } = await ensureUser(id, ctx.from!.username ?? null);
   const text =
-    "🔮 Добро пожаловать в MagnusGrade!\n\n" +
+    "🔮 Добро пожаловать в MarnusGrade!\n\n" +
     (isNew ? `Стартовый баланс: ${user.balance} 💎\n\n` : "") +
     `Баланс: ${user.balance} 💎\n\nИграть можно в приложении: выбери множитель, чем он выше, тем ниже шанс.\n\n` +
     "/app — открыть приложение\n/profile — профиль\n/history — история";
   try {
-    await ctx.replyWithPhoto(`${APP}/welcome.png`, { caption: text, reply_markup: startKb(id) });
+    await ctx.replyWithPhoto(`${APP}/marnusgrade-welcome.png`, { caption: text, reply_markup: startKb(id) });
   } catch {
     await ctx.reply(text, { reply_markup: startKb(id) });
   }

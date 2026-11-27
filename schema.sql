@@ -1,4 +1,4 @@
--- MagnusGrade: схема базы. Выполнить целиком в Supabase -> SQL Editor.
+-- MarnusGrade: схема базы. Выполнить целиком в Supabase -> SQL Editor.
 
 create table if not exists users (
   user_id    bigint primary key,
